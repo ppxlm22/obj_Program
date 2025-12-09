@@ -3,14 +3,16 @@ import cv2
 from PyQt5.QtWidgets import (QApplication, QWidget, QLabel, QVBoxLayout, 
                              QPushButton, QFileDialog, QHBoxLayout, QMessageBox)
 from PyQt5.QtCore import Qt
-from PyQt5.QtGui import QPixmap
+from PyQt5.QtGui import QPixmap, QImage
 from ultralytics import YOLO 
+
 
 class FruitDetectionApp(QWidget):
     def __init__(self):
         super().__init__()
         self.image_path = None
         self.model = None
+        self.q_img = None
         try:
             self.model = YOLO("success_model_train\\detect_fruit.pt")
         except Exception:
@@ -64,9 +66,14 @@ class FruitDetectionApp(QWidget):
         results = self.model.predict(source=frame, conf=0.7, show=False)
         result_frame = results[0].plot()
 
-        cv2.imshow("Detection", result_frame)
-        cv2.waitKey(0)
-        cv2.destroyAllWindows()
+
+        height, width, channel = result_frame.shape
+        bypt_per_line = 3 * width
+        q_img = QImage(result_frame.data, width, height, bypt_per_line, QImage.Format_RGB888).rgbSwapped()
+
+        q_pixmap = QPixmap.fromImage(q_img)
+        scaled_pixmap = q_pixmap.scaled(self.image_label.size(), Qt.KeepAspectRatio, Qt.SmoothTransformation)
+        self.image_label.setPixmap(scaled_pixmap)
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
