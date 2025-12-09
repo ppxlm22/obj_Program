@@ -1,58 +1,75 @@
 import sys
+import cv2
 from PyQt5.QtWidgets import (QApplication, QWidget, QLabel, QVBoxLayout, 
-                             QPushButton, QFileDialog)
+                             QPushButton, QFileDialog, QHBoxLayout, QMessageBox)
 from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QPixmap
 from ultralytics import YOLO 
-import cv2
-from pygame import mixer
-import numpy as np
 
-path_img = ""
+class FruitDetectionApp(QWidget):
+    def __init__(self):
+        super().__init__()
+        self.image_path = None
+        self.model = None
+        try:
+            self.model = YOLO("success_model_train\\detect_fruit.pt")
+        except Exception:
+            pass
 
-app = QApplication(sys.argv)
-window = QWidget()
-window.setWindowTitle("Simple Window")
-window.resize(800, 500)
+        self.setWindowTitle("Simple Window")
+        self.resize(800, 500)
 
-layout = QVBoxLayout() 
+        self.layout = QVBoxLayout()
 
-image_label = QLabel() 
-image_label.setAlignment(Qt.AlignCenter) 
-image_label.setStyleSheet("border: 2px solid gray;") 
+        self.image_label = QLabel()
+        self.image_label.setAlignment(Qt.AlignCenter)
+        self.image_label.setStyleSheet("border: 2px solid gray;")
+        self.image_label.setText("Area for Image Display")
+        self.image_label.setFixedSize(500, 250)
+        self.layout.addWidget(self.image_label, alignment=Qt.AlignCenter)
 
-image_label.setText("Area for Image Display")
-image_label.setFixedSize(500, 250)
+        button_layout = QHBoxLayout()
 
-layout.addWidget(image_label, alignment=Qt.AlignCenter)
+        self.btn_browse = QPushButton("Browse Image")
+        self.btn_browse.clicked.connect(self.load_image)
+        button_layout.addWidget(self.btn_browse)
 
-btn_browse = QPushButton("Browse Image")
-layout.addWidget(btn_browse, alignment=Qt.AlignCenter)
+        self.btn_detect = QPushButton("Detect")
+        self.btn_detect.clicked.connect(self.detect_image)
+        button_layout.addWidget(self.btn_detect)
 
-def load_image():
-    file_name, _ = QFileDialog.getOpenFileName(window, "Open Image", "", "Image Files (*.png *.jpg *.bmp)")
-    
-    if file_name:
-        pixmap = QPixmap(file_name)
-        scaled_pixmap = pixmap.scaled(image_label.size(), Qt.KeepAspectRatio, Qt.SmoothTransformation)
-        image_label.setPixmap(scaled_pixmap)
+        self.layout.addLayout(button_layout)
+        self.setLayout(self.layout)
 
-btn_browse.clicked.connect(load_image)
+    def load_image(self):
+        file_name, _ = QFileDialog.getOpenFileName(self, "Open Image", "", "Image Files (*.png *.jpg *.bmp)")
+        
+        if file_name:
+            self.image_path = file_name
+            pixmap = QPixmap(file_name)
+            scaled_pixmap = pixmap.scaled(self.image_label.size(), Qt.KeepAspectRatio, Qt.SmoothTransformation)
+            self.image_label.setPixmap(scaled_pixmap)
 
-window.setLayout(layout)
-window.show()
-model = YOLO("success_model_train\\detect_fruit.pt")
-image = cv2.imread(path_img)
-def detect():
-    frame = image
-    if frame is None:
-        print("Image not found")
-        exit(0)
-    predict_frame = model.predict(source=frame, conf=0.7, show=False)[0].plot()
-    cv2.imshow("Detection", predict_frame)
-    if cv2.waitKey(0) & 0xFF == ord('q'):
-        exit(0)
-    cv2.destroyAllWindows()
+    def detect_image(self):
+        if not self.image_path:
+            return
 
-sys.exit(app.exec())
+        if self.model is None:
+            return
 
+        frame = cv2.imread(self.image_path)
+        if frame is None:
+            return
+
+        results = self.model.predict(source=frame, conf=0.7, show=False)
+        result_frame = results[0].plot()
+
+        cv2.imshow("Detection", result_frame)
+        cv2.waitKey(0)
+        cv2.destroyAllWindows()
+
+if __name__ == "__main__":
+    app = QApplication(sys.argv)
+    window = FruitDetectionApp()
+    window.show()
+    sys.exit(app.exec_())
