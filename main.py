@@ -63,7 +63,7 @@ class FruitDetectionApp(QWidget):
         if frame is None:
             return
 
-        results = self.model.predict(source=frame, conf=0.7, show=False)
+        results = self.model.predict(source=frame, conf=0.7, verbose=False)
         result_frame = results[0].plot()
 
 
@@ -74,6 +74,8 @@ class FruitDetectionApp(QWidget):
         q_pixmap = QPixmap.fromImage(q_img)
         scaled_pixmap = q_pixmap.scaled(self.image_label.size(), Qt.KeepAspectRatio, Qt.SmoothTransformation)
         self.image_label.setPixmap(scaled_pixmap)
+
+
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
