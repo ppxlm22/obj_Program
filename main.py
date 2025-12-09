@@ -1,11 +1,11 @@
 import sys
-from PySide6.QtWidgets import QApplication, QWidget
+from PyQt5.QtWidgets import QApplication, QWidget
 
 app = QApplication(sys.argv)
 
 window = QWidget()
-window.setWindowTitle("หน้าต่างเปล่า - PySide6")
-window.resize(400, 300)
+window.setWindowTitle("Simple Window")
+window.resize(800, 500)
 window.show()
 
-sys.exit(app.exec())
+sys.exit(app.exec_())
