@@ -104,7 +104,7 @@ class FruitDetectionApp(QWidget):
 
             self.image_label.setPixmap(scaled_pixmap)
 
-            self.image_label.setStyleSheet("border: 2px solid #00ff7f; border-radius: 10px;")
+            self.image_label.setStyleSheet("border: 3px solid #00ff7f; border-radius: 10px;")
 
     def detect_image(self):
         if not self.image_path:
