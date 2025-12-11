@@ -23,20 +23,20 @@ class FruitDetectionApp(QWidget):
 
         self.setStyleSheet("""
             QWidget {
-                background-color: #2b2b2b; /* พื้นหลังสีเทาเข้ม */
-                color: #ffffff;             /* ตัวหนังสือสีขาว */
+                background-color: #2b2b2b; 
+                color: #ffffff;             
                 font-family: 'Segoe UI', Arial;
                 font-size: 14px;
             }
             QLabel#TitleLabel {
                 font-size: 24px;
                 font-weight: bold;
-                color: #00ff7f; /* สีเขียวสว่างสำหรับหัวข้อ */
+                color: #00ff7f; 
                 padding: 10px;
             }
             QLabel#ImageArea {
                 background-color: #1e1e1e;
-                border: 2px dashed #555555; /* เส้นประ */
+                border: 2px dashed #555555; 
                 border-radius: 10px;
             }
             QPushButton {
@@ -48,10 +48,10 @@ class FruitDetectionApp(QWidget):
                 min-width: 120px;
             }
             QPushButton:hover {
-                background-color: #505055; /* สีเปลี่ยนเมื่อเมาส์ชี้ */
+                background-color: #505055; 
             }
             QPushButton#BtnDetect {
-                background-color: #007acc; /* ปุ่ม Detect สีฟ้า */
+                background-color: #007acc; 
             }
             QPushButton#BtnDetect:hover {
                 background-color: #0098ff;
