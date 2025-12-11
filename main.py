@@ -140,3 +140,5 @@ if __name__ == "__main__":
     window = FruitDetectionApp()
     window.show()
     sys.exit(app.exec_())
+sys.exit(app.exec_())
+#ทดสอบการกลับมาแก้ branch
